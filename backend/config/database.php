@@ -29,12 +29,12 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'url' => $firstNonEmpty('DB_URL', 'MYSQL_URL', 'DATABASE_URL'),
-            'host' => $firstNonEmpty('DB_HOST', 'MYSQLHOST', 'MYSQL_HOST') ?? '127.0.0.1',
-            'port' => $firstNonEmpty('DB_PORT', 'MYSQLPORT', 'MYSQL_PORT') ?? '3306',
-            'database' => $firstNonEmpty('DB_DATABASE', 'MYSQLDATABASE', 'MYSQL_DATABASE') ?? 'education',
-            'username' => $firstNonEmpty('DB_USERNAME', 'MYSQLUSER', 'MYSQL_USER') ?? 'root',
-            'password' => $firstNonEmpty('DB_PASSWORD', 'MYSQLPASSWORD', 'MYSQL_PASSWORD') ?? '',
+            'url' => $firstNonEmpty('DB_URL', 'MYSQL_URL', 'DATABASE_URL', 'MYSQL_PRIVATE_URL', 'MYSQL_PUBLIC_URL'),
+            'host' => $firstNonEmpty('MYSQLHOST', 'MYSQL_HOST', 'DB_HOST') ?? '127.0.0.1',
+            'port' => $firstNonEmpty('MYSQLPORT', 'MYSQL_PORT', 'DB_PORT') ?? '3306',
+            'database' => $firstNonEmpty('MYSQLDATABASE', 'MYSQL_DATABASE', 'DB_DATABASE') ?? 'education',
+            'username' => $firstNonEmpty('MYSQLUSER', 'MYSQL_USER', 'DB_USERNAME') ?? 'root',
+            'password' => $firstNonEmpty('MYSQLPASSWORD', 'MYSQL_PASSWORD', 'DB_PASSWORD') ?? '',
             'unix_socket' => $firstNonEmpty('DB_SOCKET') ?? '',
             'charset' => env('DB_CHARSET', 'utf8mb4'),
             'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
