@@ -33,8 +33,21 @@ export interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement
 interface ParsedOption {
   value: string
   label: ReactNode
+  /** Plain-text form of `label`, for the native mirror and search matching. */
+  text: string
   disabled?: boolean
   group?: string
+}
+
+/** Flattens a ReactNode into searchable, readable text. */
+function nodeToText(node: ReactNode): string {
+  if (node === null || node === undefined || typeof node === 'boolean') return ''
+  if (typeof node === 'string' || typeof node === 'number') return String(node)
+  if (Array.isArray(node)) return node.map(nodeToText).join('')
+  if (isValidElement(node)) {
+    return nodeToText((node.props as { children?: ReactNode }).children)
+  }
+  return ''
 }
 
 function parseChildrenToOptions(children: ReactNode): ParsedOption[] {
@@ -49,6 +62,7 @@ function parseChildrenToOptions(children: ReactNode): ParsedOption[] {
       options.push({
         value,
         label: props.children ?? value,
+        text: nodeToText(props.children) || value,
         disabled: props.disabled,
       })
     } else if (child.type === 'optgroup') {
@@ -62,6 +76,7 @@ function parseChildrenToOptions(children: ReactNode): ParsedOption[] {
           options.push({
             value,
             label: props.children ?? value,
+            text: nodeToText(props.children) || value,
             disabled: props.disabled,
             group: groupLabel,
           })
@@ -103,6 +118,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
       return directOptions.map((opt) => ({
         value: String(opt.value),
         label: opt.label,
+        text: nodeToText(opt.label) || String(opt.value),
         disabled: opt.disabled,
         group: opt.group,
       }))
@@ -196,10 +212,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
   const filteredOptions = useMemo(() => {
     if (!searchQuery.trim()) return allOptions
     const q = searchQuery.toLowerCase()
-    return allOptions.filter((opt) => {
-      const text = typeof opt.label === 'string' ? opt.label : String(opt.value)
-      return text.toLowerCase().includes(q)
-    })
+    return allOptions.filter((opt) => opt.text.toLowerCase().includes(q))
   }, [allOptions, searchQuery])
 
   // Group options if applicable
@@ -239,7 +252,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
 
         {allOptions.map((opt) => (
           <option key={opt.value} value={opt.value} disabled={opt.disabled}>
-            {typeof opt.label === 'string' ? opt.label : opt.value}
+            {opt.text}
           </option>
         ))}
       </select>
