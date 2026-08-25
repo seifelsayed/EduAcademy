@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563EB" />
+      <stop offset="100%" stop-color="#7C3AED" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#3B82F6" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Vibrant Rounded Brand Icon Background (fills 100% of canvas with smooth rounded corners) -->
+  <rect width="48" height="48" rx="12" fill="url(#bg)" />
+  
+  <!-- Left Wing / Portal Geometry -->
+  <path d="M13 29C13 20.163 20.163 13 29 13v10c0 6.627-5.373 12-12 12h-4v-6z" fill="#FFFFFF" fill-opacity="0.96"/>
+  
+  <!-- Right Wing / Ascending Growth Geometry -->
+  <path d="M35 19C35 27.837 27.837 35 19 35v-10c0-6.627 5.373-12 12-12h4v6z" fill="url(#accent)" fill-opacity="0.88"/>
+  
+  <!-- Central Innovation Focus Diamond -->
+  <polygon points="24,18 28,24 24,30 20,24" fill="#FFFFFF" />
+  
+  <!-- Top Floating Growth Node -->
+  <circle cx="34" cy="14" r="3.5" fill="#38BDF8" />
+</svg>
