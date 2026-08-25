@@ -15,7 +15,10 @@ Route::get('/', fn () => response()->json([
     'docs' => 'See docs/API.md in the repository.',
     'health' => url('/up'),
     'debug_db' => url('/debug-db'),
-]))->withoutMiddleware([\Illuminate\Session\Middleware\StartSession::class]);
+]))->withoutMiddleware([
+    \Illuminate\Session\Middleware\StartSession::class,
+    \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+]);
 
 Route::get('/debug-db', function () {
     try {
@@ -37,4 +40,7 @@ Route::get('/debug-db', function () {
             'username' => config('database.connections.mysql.username'),
         ], 200);
     }
-})->withoutMiddleware([\Illuminate\Session\Middleware\StartSession::class]);
+})->withoutMiddleware([
+    \Illuminate\Session\Middleware\StartSession::class,
+    \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+]);
