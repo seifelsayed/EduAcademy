@@ -11,6 +11,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Session\TokenMismatchException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -70,11 +71,23 @@ final class ExceptionRenderer
                 404,
             ),
 
+            $e instanceof TokenMismatchException => ApiResponse::error(
+                'Your session expired. Please refresh the page and try again.',
+                'session_expired',
+                419,
+            ),
+
             $e instanceof TooManyRequestsHttpException => ApiResponse::error(
                 'Too many requests. Please slow down.',
                 'rate_limited',
                 429,
                 array_filter(['retry_after' => $e->getHeaders()['Retry-After'] ?? null]),
+            ),
+
+            $e instanceof HttpExceptionInterface && $e->getStatusCode() === 419 => ApiResponse::error(
+                'Your session expired. Please refresh the page and try again.',
+                'session_expired',
+                419,
             ),
 
             $e instanceof HttpExceptionInterface => ApiResponse::error(

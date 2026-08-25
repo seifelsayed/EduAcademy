@@ -230,6 +230,34 @@ export function localizeErrorMessage(message?: string | null, lang?: string): st
     return 'لا يمكن أن يتجاوز سعر الخصم السعر الأساسي.'
   }
 
+  if (/^The (.*) has already been taken\.$/i.test(trimmed)) {
+    return /email/i.test(trimmed)
+      ? 'هذا البريد الإلكتروني مسجّل بالفعل.'
+      : 'هذه القيمة مستخدمة بالفعل.'
+  }
+
+  if (/^The (.*) must be a valid email address\.$/i.test(trimmed) || /^The (.*) field must be a valid email address\.$/i.test(trimmed)) {
+    return 'أدخل بريداً إلكترونياً صحيحاً.'
+  }
+
+  if (/^The (.*) confirmation does not match\.$/i.test(trimmed)) {
+    return 'كلمتا المرور غير متطابقتين.'
+  }
+
+  if (/^The (.*) must be at least (\d+) characters\.$/i.test(trimmed)) {
+    const min = trimmed.match(/(\d+)/)?.[1] ?? '8'
+    return `يجب ألا يقل هذا الحقل عن ${min} أحرف.`
+  }
+
+  if (/^The (.*) field must not be greater than (\d+) characters\.$/i.test(trimmed)) {
+    const max = trimmed.match(/(\d+)/)?.[1] ?? '255'
+    return `لا يمكن أن يتجاوز هذا الحقل ${max} حرفاً.`
+  }
+
+  if (/^The selected (.*) is invalid\.$/i.test(trimmed)) {
+    return 'القيمة المختارة غير صالحة.'
+  }
+
   return message
 }
 

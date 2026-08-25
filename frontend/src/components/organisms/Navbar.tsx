@@ -8,6 +8,7 @@ import {
   IconHeart,
   IconLanguage,
   IconLayoutDashboard,
+  IconLogin2,
   IconLogout,
   IconMessageCircle,
   IconMoon,
@@ -386,6 +387,16 @@ export function Navbar() {
             </DropdownMenu>
           ) : (
             <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className="sm:hidden p-2 rounded-xl text-text-muted hover:text-primary hover:bg-surface-muted border border-border bg-surface transition-all duration-150 cursor-pointer shadow-xs active:scale-95"
+                onClick={() => navigate('/login')}
+                aria-label={t('navigation.login')}
+                title={t('navigation.login')}
+              >
+                <IconLogin2 size={18} />
+              </button>
+
               <span className="hidden sm:inline-flex">
                 <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>
                   {t('navigation.login')}

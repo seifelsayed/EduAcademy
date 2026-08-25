@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-import { toUserMessage } from '@/core/domain/errors/ApiError'
+import { apiErrorMessage } from '@/shared/lib/i18n/apiErrorMessage'
 import { localizeErrorMessage } from '@/shared/lib/i18n'
 
 export type ToastKind = 'success' | 'danger' | 'warning' | 'info'
@@ -77,10 +77,10 @@ export const toast = {
     }),
 
   /** Shows whatever a caught value has to say, without leaking stack traces. */
-  fromError: (error: unknown, fallback = 'Something went wrong.') =>
+  fromError: (error: unknown, fallback = 'unknown') =>
     useToastStore.getState().push({
       kind: 'danger',
-      title: localizeErrorMessage(toUserMessage(error, fallback)),
+      title: apiErrorMessage(error, fallback),
     }),
 }
 

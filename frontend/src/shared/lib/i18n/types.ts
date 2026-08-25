@@ -349,4 +349,36 @@ export interface TranslationDictionary {
     thumbnailHint: string
     addItem: string
   }
+
+  apiErrors: {
+    session_expired: string
+    invalid_credentials: string
+    unauthenticated: string
+    account_inactive: string
+    forbidden: string
+    not_found: string
+    endpoint_not_found: string
+    validation_failed: string
+    email_taken: string
+    already_enrolled: string
+    payment_required: string
+    course_not_published: string
+    own_course: string
+    not_enrolled: string
+    course_not_publishable: string
+    course_has_students: string
+    no_attempts_remaining: string
+    attempt_already_submitted: string
+    submission_locked: string
+    submission_closed: string
+    insufficient_progress: string
+    certificate_not_earned: string
+    category_in_use: string
+    rate_limited: string
+    server_error: string
+    schema_mismatch: string
+    network_error: string
+    http_error: string
+    unknown: string
+  }
 }
