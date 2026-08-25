@@ -43,13 +43,14 @@ const instance: AxiosInstance = axios.create({
  * the XSRF-TOKEN cookie to exist first. This fetches it once and remembers the
  * in-flight promise, so a burst of parallel writes triggers a single round trip.
  */
+const apiOrigin = env.apiUrl.startsWith('http') ? new URL(env.apiUrl).origin : ''
 let csrfRequest: Promise<void> | null = null
 
 async function ensureCsrfCookie(): Promise<void> {
   if (document.cookie.includes('XSRF-TOKEN=')) return
 
   csrfRequest ??= axios
-    .get('/sanctum/csrf-cookie', { baseURL: '/', withCredentials: true })
+    .get(`${apiOrigin}/sanctum/csrf-cookie`, { withCredentials: true })
     .then(() => undefined)
     .catch(() => undefined)
     .finally(() => {
