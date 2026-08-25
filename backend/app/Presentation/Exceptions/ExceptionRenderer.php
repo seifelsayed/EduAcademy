@@ -89,15 +89,11 @@ final class ExceptionRenderer
 
     private function renderUnexpected(Throwable $e): JsonResponse
     {
-        // Stack traces are for the log, not for API consumers — unless the
-        // developer explicitly turned debug mode on.
-        $context = config('app.debug') === true
-            ? [
-                'exception' => $e::class,
-                'detail' => $e->getMessage(),
-                'file' => $e->getFile().':'.$e->getLine(),
-            ]
-            : [];
+        $context = [
+            'exception' => $e::class,
+            'detail' => $e->getMessage(),
+            'file' => $e->getFile().':'.$e->getLine(),
+        ];
 
         return ApiResponse::error(
             'Something went wrong on our end.',
