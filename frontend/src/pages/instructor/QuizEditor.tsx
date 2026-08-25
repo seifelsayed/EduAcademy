@@ -175,7 +175,7 @@ export function QuizEditor({ lesson }: QuizEditorProps) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      aria-label="Delete question"
+                      aria-label={isAr ? 'حذف السؤال' : 'Delete question'}
                       icon={<IconTrash size={15} />}
                       className="text-text-muted hover:text-danger hover:bg-danger-light"
                       onClick={() => mutations.deleteQuestion.mutate(question.id)}

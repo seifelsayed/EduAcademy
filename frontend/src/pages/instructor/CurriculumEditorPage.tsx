@@ -188,7 +188,7 @@ export function CurriculumEditorPage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  aria-label="Move section up"
+                  aria-label={isAr ? 'نقل الفصل لأعلى' : 'Move section up'}
                   disabled={sectionIndex === 0}
                   icon={<IconChevronUp size={15} />}
                   onClick={() => moveSection(sectionIndex, -1)}
@@ -196,7 +196,7 @@ export function CurriculumEditorPage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  aria-label="Move section down"
+                  aria-label={isAr ? 'نقل الفصل لأسفل' : 'Move section down'}
                   disabled={sectionIndex === ordered.length - 1}
                   icon={<IconChevronDown size={15} />}
                   onClick={() => moveSection(sectionIndex, 1)}
@@ -214,7 +214,7 @@ export function CurriculumEditorPage() {
                   size="sm"
                   icon={<IconTrash size={15} />}
                   className="text-text-muted hover:text-danger hover:bg-danger-light"
-                  aria-label="Delete section"
+                  aria-label={isAr ? 'حذف الفصل' : 'Delete section'}
                   onClick={() =>
                     setPendingDelete({ kind: 'section', id: section.id, title: section.title })
                   }
@@ -276,7 +276,7 @@ export function CurriculumEditorPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      aria-label="Move lesson up"
+                      aria-label={isAr ? 'نقل الدرس لأعلى' : 'Move lesson up'}
                       disabled={lessonIndex === 0}
                       icon={<IconChevronUp size={15} />}
                       onClick={() => moveLesson(section, lessonIndex, -1)}
@@ -284,7 +284,7 @@ export function CurriculumEditorPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      aria-label="Move lesson down"
+                      aria-label={isAr ? 'نقل الدرس لأسفل' : 'Move lesson down'}
                       disabled={lessonIndex === (section.lessons ?? []).length - 1}
                       icon={<IconChevronDown size={15} />}
                       onClick={() => moveLesson(section, lessonIndex, 1)}
@@ -292,14 +292,14 @@ export function CurriculumEditorPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      aria-label="Edit lesson"
+                      aria-label={isAr ? 'تعديل الدرس' : 'Edit lesson'}
                       icon={<IconEdit size={15} />}
                       onClick={() => setLessonModal({ open: true, sectionId: section.id, lesson })}
                     />
                     <Button
                       variant="ghost"
                       size="sm"
-                      aria-label="Delete lesson"
+                      aria-label={isAr ? 'حذف الدرس' : 'Delete lesson'}
                       icon={<IconTrash size={15} />}
                       className="text-text-muted hover:text-danger hover:bg-danger-light"
                       onClick={() =>
