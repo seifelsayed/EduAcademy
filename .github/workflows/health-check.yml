@@ -1,0 +1,84 @@
+# Periodic health probe for the Railway backend.
+#
+# NOTE ON "KEEPING IT AWAKE": Railway does not sleep a service unless you turn
+# on Serverless in the service settings. With Serverless OFF (the current
+# setup) this workflow does NOT keep anything alive — the app is already
+# running 24/7, and extra requests only consume usage credit faster.
+#
+# What it is genuinely for: telling you when the backend goes down — whether it
+# crashed, lost its database, or ran out of credit. A failed run shows up as a
+# red check and GitHub emails you.
+#
+# If you later enable Serverless, this same schedule doubles as a warm-up ping.
+
+name: Backend health check
+
+on:
+  schedule:
+    # Every 15 minutes. GitHub's minimum is 5, but scheduled runs are queued on
+    # shared runners and often drift by several minutes — a tighter interval
+    # buys nothing.
+    - cron: '*/15 * * * *'
+  workflow_dispatch: # lets you run it on demand from the Actions tab
+
+# A late run should not pile up behind the previous one.
+concurrency:
+  group: health-check
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # Override in Settings → Secrets and variables → Actions → Variables
+  # if the deployment URL ever changes.
+  BASE_URL: ${{ vars.RAILWAY_BASE_URL || 'https://eduacademy-production.up.railway.app' }}
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Framework health endpoint
+        run: |
+          echo "Probing $BASE_URL/up"
+          code=$(curl -sS -o /tmp/up.txt -w '%{http_code}' --max-time 30 --retry 2 --retry-delay 5 "$BASE_URL/up")
+          echo "HTTP $code"
+          if [ "$code" != "200" ]; then
+            echo "::error::Health endpoint returned $code"
+            cat /tmp/up.txt || true
+            exit 1
+          fi
+
+      - name: Database-backed endpoint
+        run: |
+          # /up only proves PHP is answering. This query proves the app can
+          # still reach MySQL — the failure that took the site down before.
+          echo "Probing $BASE_URL/api/v1/categories"
+          code=$(curl -sS -o /tmp/db.json -w '%{http_code}' --max-time 30 --retry 2 --retry-delay 5 "$BASE_URL/api/v1/categories")
+          echo "HTTP $code"
+
+          if [ "$code" != "200" ]; then
+            echo "::error::Database-backed endpoint returned $code — the API is up but MySQL is likely unreachable."
+            head -c 500 /tmp/db.json || true
+            exit 1
+          fi
+
+          count=$(python3 -c "import json;print(len(json.load(open('/tmp/db.json'))['data']))")
+          echo "Categories returned: $count"
+
+          if [ "$count" -eq 0 ]; then
+            echo "::warning::Connected, but no categories came back. The database may have been reset or not seeded."
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Backend health"
+            echo ""
+            echo "- Target: \`$BASE_URL\`"
+            echo "- Checked: $(date -u '+%Y-%m-%d %H:%M UTC')"
+            echo "- Result: ${{ job.status }}"
+          } >> "$GITHUB_STEP_SUMMARY"

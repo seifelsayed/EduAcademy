@@ -18,6 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
         apiPrefix: 'api',
     )
+    ->withCommands([
+        __DIR__.'/../app/Presentation/Console/Commands',
+    ])
     ->withMiddleware(function (Middleware $middleware): void {
         // Enables cookie-based auth for the SPA on the same top-level domain,
         // while token auth keeps working for everything else.
