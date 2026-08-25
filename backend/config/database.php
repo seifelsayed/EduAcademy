@@ -4,6 +4,16 @@ declare(strict_types=1);
 
 use Illuminate\Support\Str;
 
+$firstNonEmpty = static function (string ...$names): ?string {
+    foreach ($names as $name) {
+        $val = env($name);
+        if ($val !== null && $val !== '') {
+            return (string) $val;
+        }
+    }
+    return null;
+};
+
 return [
     'default' => env('DB_CONNECTION', 'mysql'),
 
@@ -11,7 +21,7 @@ return [
 
         'sqlite' => [
             'driver' => 'sqlite',
-            'url' => env('DB_URL'),
+            'url' => $firstNonEmpty('DB_URL', 'DATABASE_URL'),
             'database' => env('DB_DATABASE', database_path('database.sqlite')),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
@@ -19,13 +29,13 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'url' => env('DB_URL', env('MYSQL_URL', env('DATABASE_URL'))),
-            'host' => env('DB_HOST', env('MYSQLHOST', '127.0.0.1')),
-            'port' => env('DB_PORT', env('MYSQLPORT', '3306')),
-            'database' => env('DB_DATABASE', env('MYSQLDATABASE', 'education')),
-            'username' => env('DB_USERNAME', env('MYSQLUSER', 'root')),
-            'password' => env('DB_PASSWORD', env('MYSQLPASSWORD', '')),
-            'unix_socket' => env('DB_SOCKET', ''),
+            'url' => $firstNonEmpty('DB_URL', 'MYSQL_URL', 'DATABASE_URL'),
+            'host' => $firstNonEmpty('DB_HOST', 'MYSQLHOST', 'MYSQL_HOST') ?? '127.0.0.1',
+            'port' => $firstNonEmpty('DB_PORT', 'MYSQLPORT', 'MYSQL_PORT') ?? '3306',
+            'database' => $firstNonEmpty('DB_DATABASE', 'MYSQLDATABASE', 'MYSQL_DATABASE') ?? 'education',
+            'username' => $firstNonEmpty('DB_USERNAME', 'MYSQLUSER', 'MYSQL_USER') ?? 'root',
+            'password' => $firstNonEmpty('DB_PASSWORD', 'MYSQLPASSWORD', 'MYSQL_PASSWORD') ?? '',
+            'unix_socket' => $firstNonEmpty('DB_SOCKET') ?? '',
             'charset' => env('DB_CHARSET', 'utf8mb4'),
             'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
             'prefix' => '',
